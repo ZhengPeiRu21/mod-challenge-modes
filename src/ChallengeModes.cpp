@@ -419,6 +419,10 @@ public:
 
     bool OnGossipHello(Player* player, GameObject* go) override
     {
+        // To workaround an issue with loading PlayerSettingVectors, we first get the largest value once
+        // This will not be necessary once this PR is merged: https://github.com/azerothcore/azerothcore-wotlk/pull/13338
+        playerSettingEnabled(player, SETTING_QUEST_XP_ONLY);
+
         if (hardcoreEnable && !playerSettingEnabled(player, SETTING_HARDCORE) && !playerSettingEnabled(player, SETTING_SEMI_HARDCORE))
         {
             AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Enable Hardcore Mode", 0, SETTING_HARDCORE);
