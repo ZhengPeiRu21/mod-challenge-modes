@@ -14,6 +14,8 @@ This module adds the following challenge modes:
 Challenges can be activated per-character by interacting with the Shrine of Challenge added near the graveyard of each starting area.
 Challenges can only be enabled on characters at level 1 (or level 55 for Death Knights).
 
+Multiple challenges can be activated on a single character as long as they do not conflict, such as Hardcore and Semi-Hardcore.
+
 Rewards for reaching level thresholds for each challenge can be added using the Config file, and can include:
 - Items
 - Titles
