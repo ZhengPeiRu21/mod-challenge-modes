@@ -1,0 +1,89 @@
+#
+# Copyright (C) 2016+ AzerothCore <www.azerothcore.org>, released under GNU AGPL v3 license: https://github.com/azerothcore/azerothcore-wotlk/blob/master/LICENSE-AGPL3
+#
+
+[worldserver]
+
+########################################
+# Challenge Mods Config
+########################################
+#    ChallengeModes.Enable
+#        Description: Enable challenge modes.
+#            If set to 0, all challenges will be disabled, and the challenge mode selection object will not be present in starting areas.
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+
+ChallengeModes.Enable = 0
+#
+#    The following challenge modes are available:
+#        Hardcore - Players who die are permanently ghosts and can never be revived.
+#        SemiHardcore - Players who die lose all worn equipment and carried gold. Cannot be enabled at the same time as Hardcore.
+#        SelfCrafted - Players can only wear equipment that they have crafted.
+#        ItemQualityLevel - Players can only wear equipment that is of Normal or Poor quality
+#        SlowXpGain - Players receive 0.5x the normal amount of XP.
+#        VerySlowXpGain - Players receive 0.25x the normal amount of XP. Provides all rewards of SlowXpGain as well.
+#        QuestXpOnly - Players can receive XP only from quests
+#
+#
+#    The options for each mode follow the same format. "<Challenge>" is replaced with the name of the challenge, such as Hardcore. The following options are possible:
+#    <Challenge>.Enable = 1
+#        If set to 0, this challenge option will not be selectable at the challenge modes object.
+#    <Challenge>.TitleRewards = ""
+#        Rewards titles for players when reaching the given levels with the challenge enabled.
+#        The IDs used are from CharTitles.dbc. The format is the level followed by the title ID, separated by commas.
+#        Example: <Challenge>.TitleRewards = "60 143, 70 123, 80 145"
+#    <Challenge>.XPMultiplier = ""
+#        Multiplies XP the player gains if this challege is enabled. This is a multiplier values, so bonus are applied multiplicatively.
+#        This reward option is not available for SlowXpGain and VerySlowXpGain
+#        Example: <Challenge>.XPMultiplier = "1.5"
+#    <Challenge>.TalentRewards = ""
+#        Rewards talent points for players when reaching the given levels with the challenge enabled.
+#        The format is the level followed by the number of talent points given at that level, separated by commas.
+#        Example: <Challenge>.TalentRewards = "30 1, 35 1, 40 1, 45 1, 50 1, 60 2, 70 2, 80 5"
+#    <Challenge>.ItemRewards = ""
+#        Rewards items for players when reaching the given levels with the challenge enabled.
+#        The IDs used are item entry IDs. The format is the level followed by the item ID, separated by commas.
+#        Example: <Challenge>.ItemRewards = "80 54811"
+#
+#
+
+Hardcore.Enable = 1
+Hardcore.TitleRewards = ""
+Hardcore.XPMultiplier = 1
+Hardcore.TalentRewards = ""
+Hardcore.ItemRewards = ""
+
+SemiHardcore.Enable = 1
+SemiHardcore.TitleRewards = ""
+SemiHardcore.XPMultiplier = 1
+SemiHardcore.TalentRewards = ""
+SemiHardcore.ItemRewards = ""
+
+SelfCrafted.Enable = 1
+SelfCrafted.TitleRewards = ""
+SelfCrafted.XPMultiplier = 1
+SelfCrafted.TalentRewards = ""
+SelfCrafted.ItemRewards = ""
+
+ItemQualityLevel.Enable = 1
+ItemQualityLevel.TitleRewards = ""
+ItemQualityLevel.XPMultiplier = 1
+ItemQualityLevel.TalentRewards = ""
+ItemQualityLevel.ItemRewards = ""
+
+SlowXpGain.Enable = 1
+SlowXpGain.TitleRewards = ""
+SlowXpGain.TalentRewards = ""
+SlowXpGain.ItemRewards = ""
+
+VerySlowXpGain.Enable = 1
+VerySlowXpGain.TitleRewards = ""
+VerySlowXpGain.TalentRewards = ""
+VerySlowXpGain.ItemRewards = ""
+
+QuestXpOnly.Enable = 1
+QuestXpOnly.TitleRewards = ""
+QuestXpOnly.XPMultiplier = 1
+QuestXpOnly.TalentRewards = ""
+QuestXpOnly.ItemRewards = ""
