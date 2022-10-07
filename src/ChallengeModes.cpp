@@ -52,6 +52,7 @@ private:
             slowXpGainEnable        = sConfigMgr->GetOption<bool>("SlowXpGain.Enable", true);
             verySlowXpGainEnable    = sConfigMgr->GetOption<bool>("VerySlowXpGain.Enable", true);
             questXpOnlyEnable       = sConfigMgr->GetOption<bool>("QuestXpOnly.Enable", true);
+            ironManEnable           = sConfigMgr->GetOption<bool>("IronMan.Enable", true);
 
             hardcoreXpBonus         = sConfigMgr->GetOption<float>("Hardcore.XPMultiplier", 1.0f);
             semiHardcoreXpBonus     = sConfigMgr->GetOption<float>("SemiHardcore.XPMultiplier", 1.0f);
@@ -355,6 +356,158 @@ public:
     }
 };
 
+class ChallengeMode_IronMan : public ChallengeMode
+{
+public:
+    ChallengeMode_IronMan() : ChallengeMode("ChallengeMode_IronMan",
+                                             ironManTitleRewards,
+                                             ironManTalentRewards,
+                                             ironManItemRewards,
+                                             1.0, // No XP bonus permitted for Iron Man, per its rules
+                                             SETTING_IRON_MAN,
+                                             ironManEnable)
+    {}
+
+    void OnPlayerResurrect(Player* player, float /*restore_percent*/, bool /*applySickness*/) override
+    {
+        if (!challengesEnabled || !ironManEnable || !player->GetPlayerSetting("mod-challenge-modes", SETTING_IRON_MAN).value)
+        {
+            return;
+        }
+        // A better implementation is to not allow the resurrect but this will need a new hook added first
+        player->KillPlayer();
+    }
+
+    void OnGiveXP(Player* player, uint32& amount, Unit* victim) override
+    {
+        ChallengeMode::OnGiveXP(player, amount, victim);
+    }
+
+    void OnLevelChanged(Player* player, uint8 oldlevel) override
+    {
+        if (!challengesEnabled || !ironManEnable || !player->GetPlayerSetting("mod-challenge-modes", SETTING_IRON_MAN).value)
+        {
+            return;
+        }
+        player->SetFreeTalentPoints(0); // Remove all talent points
+        ChallengeMode::OnLevelChanged(player, oldlevel);
+    }
+
+    void OnTalentsReset(Player* player, bool /*noCost*/) override
+    {
+        if (!challengesEnabled || !ironManEnable || !player->GetPlayerSetting("mod-challenge-modes", SETTING_IRON_MAN).value)
+        {
+            return;
+        }
+        player->SetFreeTalentPoints(0); // Remove all talent points
+    }
+
+    bool CanEquipItem(Player* player, uint8 /*slot*/, uint16& /*dest*/, Item* pItem, bool /*swap*/, bool /*not_loading*/) override
+    {
+        if (!challengesEnabled || !ironManEnable || !player->GetPlayerSetting("mod-challenge-modes", SETTING_IRON_MAN).value)
+        {
+            return true;
+        }
+        return pItem->GetTemplate()->Quality <= ITEM_QUALITY_NORMAL;
+    }
+
+    bool CanApplyEnchantment(Player* player, Item* /*item*/, EnchantmentSlot /*slot*/, bool /*apply*/, bool /*apply_dur*/, bool /*ignore_condition*/) override
+    {
+        if (!challengesEnabled || !ironManEnable || !player->GetPlayerSetting("mod-challenge-modes", SETTING_IRON_MAN).value)
+        {
+            return true;
+        }
+        // Are there any exceptions in WotLK? If so need to be added here
+        return false;
+    }
+
+    void OnLearnSpell(Player* player, uint32 spellID) override
+    {
+        if (!challengesEnabled || !ironManEnable || !player->GetPlayerSetting("mod-challenge-modes", SETTING_IRON_MAN).value)
+        {
+            return;
+        }
+        // These professions are class skills so they are always acceptable
+        switch (spellID)
+        {
+            case RUNEFORGING:
+            case POISONS:
+            case BEAST_TRAINING:
+                return;
+        }
+        // Do not allow learning any trade skills
+        SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellID);
+        if (!spellInfo)
+            return;
+        bool shouldForget = false;
+        for (uint8 i = 0; i < 3; i++)
+        {
+            if (spellInfo->Effects[i].Effect == SPELL_EFFECT_TRADE_SKILL)
+            {
+                shouldForget = true;
+            }
+        }
+        if (shouldForget)
+        {
+            player->removeSpell(spellID, SPEC_MASK_ALL, false);
+        }
+    }
+
+    bool CanUseItem(Player* player, ItemTemplate const* proto, InventoryResult& /*result*/) override
+    {
+        if (!challengesEnabled || !ironManEnable || !player->GetPlayerSetting("mod-challenge-modes", SETTING_IRON_MAN).value)
+        {
+            return true;
+        }
+        // Do not allow using elixir, potion, or flask
+        if (proto->Class == ITEM_CLASS_CONSUMABLE &&
+                (proto->SubClass == ITEM_SUBCLASS_POTION ||
+                proto->SubClass == ITEM_SUBCLASS_ELIXIR ||
+                proto->SubClass == ITEM_SUBCLASS_FLASK))
+        {
+            return false;
+        }
+        // Do not allow food that gives food buffs
+        if (proto->Class == ITEM_CLASS_CONSUMABLE && proto->SubClass == ITEM_SUBCLASS_FOOD)
+        {
+            for (const auto & Spell : proto->Spells)
+            {
+                SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(Spell.SpellId);
+                if (!spellInfo)
+                    continue;
+
+                for (uint8 i = 0; i < 3; i++)
+                {
+                    if (spellInfo->Effects[i].ApplyAuraName == SPELL_AURA_PERIODIC_TRIGGER_SPELL)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    bool CanGroupInvite(Player* player, std::string& /*membername*/) override
+    {
+        if (!challengesEnabled || !ironManEnable || !player->GetPlayerSetting("mod-challenge-modes", SETTING_IRON_MAN).value)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    bool CanGroupAccept(Player* player, Group* /*group*/) override
+    {
+        if (!challengesEnabled || !ironManEnable || !player->GetPlayerSetting("mod-challenge-modes", SETTING_IRON_MAN).value)
+        {
+            return true;
+        }
+        return false;
+    }
+
+};
+
 class gobject_challenge_modes : public GameObjectScript
 {
 private:
@@ -384,7 +537,7 @@ public:
     {
         // To workaround an issue with loading PlayerSettingVectors, we first get the largest value once
         // This will not be necessary once this PR is merged: https://github.com/azerothcore/azerothcore-wotlk/pull/13338
-        playerSettingEnabled(player, SETTING_QUEST_XP_ONLY);
+        playerSettingEnabled(player, SETTING_IRON_MAN);
 
         if (hardcoreEnable && !playerSettingEnabled(player, SETTING_HARDCORE) && !playerSettingEnabled(player, SETTING_SEMI_HARDCORE))
         {
@@ -413,6 +566,10 @@ public:
         if (questXpOnlyEnable && !playerSettingEnabled(player, SETTING_QUEST_XP_ONLY))
         {
             AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Enable Quest XP Only Mode", 0, SETTING_QUEST_XP_ONLY);
+        }
+        if (ironManEnable && !playerSettingEnabled(player, SETTING_IRON_MAN))
+        {
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Enable Iron Man Mode", 0, SETTING_IRON_MAN);
         }
         SendGossipMenuFor(player, 12669, go->GetGUID());
         return true;
@@ -444,4 +601,5 @@ void AddSC_mod_challenge_modes()
     new ChallengeMode_SlowXpGain();
     new ChallengeMode_VerySlowXpGain();
     new ChallengeMode_QuestXpOnly();
+    new ChallengeMode_IronMan();
 }

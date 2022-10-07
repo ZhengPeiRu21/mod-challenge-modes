@@ -10,6 +10,7 @@ This module adds the following challenge modes:
 - **Slow XP Gain** - Players receive 0.5x the normal amount of XP.
 - **Very Slow XP Gain** - Players receive 0.25x the normal amount of XP.
 - **Quest XP Only** - Players can receive XP only from quests
+- **Iron Man Mode** - Enforces the [Iron Man Ruleset](https://wowchallenges.com/challangeinfo/iron-man/)
 
 Challenges can be activated per-character by interacting with the Shrine of Challenge added near the graveyard of each starting area.
 Challenges can only be enabled on characters at level 1 (or level 55 for Death Knights).

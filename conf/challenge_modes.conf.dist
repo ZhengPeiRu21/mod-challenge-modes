@@ -24,6 +24,7 @@ ChallengeModes.Enable = 0
 #        SlowXpGain - Players receive 0.5x the normal amount of XP.
 #        VerySlowXpGain - Players receive 0.25x the normal amount of XP. Provides all rewards of SlowXpGain as well.
 #        QuestXpOnly - Players can receive XP only from quests
+#        IronManMode - Enforces the Iron Man ruleset (https://wowchallenges.com/challangeinfo/iron-man/)
 #
 #
 #    The options for each mode follow the same format. "<Challenge>" is replaced with the name of the challenge, such as Hardcore. The following options are possible:
@@ -87,3 +88,8 @@ QuestXpOnly.TitleRewards = ""
 QuestXpOnly.XPMultiplier = 1
 QuestXpOnly.TalentRewards = ""
 QuestXpOnly.ItemRewards = ""
+
+IronMan.Enable = 1
+IronMan.TitleRewards = ""
+IronMan.TalentRewards = ""
+IronMan.ItemRewards = ""
