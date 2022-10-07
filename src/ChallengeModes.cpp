@@ -4,27 +4,27 @@
 
 #include "ChallengeModes.h"
 
-static bool challengesEnabled, hardcoreEnable, semiHardcoreEnable, selfCraftedEnable, itemQualityLevelEnable, slowXpGainEnable, verySlowXpGainEnable, questXpOnlyEnable;
-static float hardcoreXpBonus, semiHardcoreXpBonus, selfCraftedXpBonus, itemQualityLevelXpBonus, questXpOnlyXpBonus;
-static std::map<uint8, uint32> hardcoreTitleRewards, semiHardcoreTitleRewards, selfCraftedTitleRewards, itemQualityLevelTitleRewards, slowXpGainTitleRewards, verySlowXpGainTitleRewards, questXpOnlyTitleRewards;
-static std::map<uint8, uint32> hardcoreItemRewards, semiHardcoreItemRewards, selfCraftedItemRewards, itemQualityLevelItemRewards, slowXpGainItemRewards, verySlowXpGainItemRewards, questXpOnlyItemRewards;
-static std::map<uint8, uint32> hardcoreTalentRewards, semiHardcoreTalentRewards, selfCraftedTalentRewards, itemQualityLevelTalentRewards, slowXpGainTalentRewards, verySlowXpGainTalentRewards, questXpOnlyTalentRewards;
-
-static bool mapContainsKey(std::map<uint8, uint32> mapToCheck, uint8 key)
-{
-    return (mapToCheck.find(key) != mapToCheck.end());
-}
-
 class ChallengeModes_WorldScript : public WorldScript
 {
+public:
+    ChallengeModes_WorldScript()
+        : WorldScript("ChallengeModes_WorldScript")
+    {}
+
+    void OnBeforeConfigLoad(bool /*reload*/) override
+    {
+        LoadConfig();
+    }
+
 private:
-    static void LoadStringToMap(std::map<uint8, uint32> &mapToLoad, const std::string &configString)
+    static void LoadStringToMap(std::unordered_map<uint8, uint32> &mapToLoad, const std::string &configString)
     {
         std::string delimitedValue;
         std::stringstream configIdStream;
 
         configIdStream.str(configString);
-        while (std::getline(configIdStream, delimitedValue, ',')) // Process each config ID in the string, delimited by the comma - "," and then space " "
+        // Process each config ID in the string, delimited by the comma - "," and then space " "
+        while (std::getline(configIdStream, delimitedValue, ','))
         {
             std::string pairOne, pairTwo;
             std::stringstream configPairStream(delimitedValue);
@@ -37,95 +37,48 @@ private:
 
     static void LoadConfig()
     {
-        hardcoreTitleRewards.clear();
-        semiHardcoreTitleRewards.clear();
-        selfCraftedTitleRewards.clear();
-        itemQualityLevelTitleRewards.clear();
-        slowXpGainTitleRewards.clear();
-        verySlowXpGainTitleRewards.clear();
-        questXpOnlyTitleRewards.clear();
-        hardcoreItemRewards.clear();
-        semiHardcoreItemRewards.clear();
-        selfCraftedItemRewards.clear();
-        itemQualityLevelItemRewards.clear();
-        slowXpGainItemRewards.clear();
-        verySlowXpGainItemRewards.clear();
-        questXpOnlyItemRewards.clear();
-        hardcoreTalentRewards.clear();
-        semiHardcoreTalentRewards.clear();
-        selfCraftedTalentRewards.clear();
-        itemQualityLevelTalentRewards.clear();
-        slowXpGainTalentRewards.clear();
-        verySlowXpGainTalentRewards.clear();
-        questXpOnlyTalentRewards.clear();
+        if (challengesEnabled = sConfigMgr->GetOption<bool>("ChallengeModes.Enable", false))
+        {
+            for (auto& [confName, rewardMap] : rewardConfigMap)
+            {
+                rewardMap.clear();
+                LoadStringToMap(rewardMap, sConfigMgr->GetOption<std::string>(confName, ""));
+            }
 
-        challengesEnabled = sConfigMgr->GetOption<bool>("ChallengeModes.Enable", false);
-        hardcoreEnable = sConfigMgr->GetOption<bool>("Hardcore.Enable", true);
-        semiHardcoreEnable = sConfigMgr->GetOption<bool>("SemiHardcore.Enable", true);
-        selfCraftedEnable = sConfigMgr->GetOption<bool>("SelfCrafted.Enable", true);
-        itemQualityLevelEnable = sConfigMgr->GetOption<bool>("ItemQualityLevel.Enable", true);
-        slowXpGainEnable = sConfigMgr->GetOption<bool>("SlowXpGain.Enable", true);
-        verySlowXpGainEnable = sConfigMgr->GetOption<bool>("VerySlowXpGain.Enable", true);
-        questXpOnlyEnable = sConfigMgr->GetOption<bool>("QuestXpOnly.Enable", true);
+            hardcoreEnable          = sConfigMgr->GetOption<bool>("Hardcore.Enable", true);
+            semiHardcoreEnable      = sConfigMgr->GetOption<bool>("SemiHardcore.Enable", true);
+            selfCraftedEnable       = sConfigMgr->GetOption<bool>("SelfCrafted.Enable", true);
+            itemQualityLevelEnable  = sConfigMgr->GetOption<bool>("ItemQualityLevel.Enable", true);
+            slowXpGainEnable        = sConfigMgr->GetOption<bool>("SlowXpGain.Enable", true);
+            verySlowXpGainEnable    = sConfigMgr->GetOption<bool>("VerySlowXpGain.Enable", true);
+            questXpOnlyEnable       = sConfigMgr->GetOption<bool>("QuestXpOnly.Enable", true);
 
-        hardcoreXpBonus = sConfigMgr->GetOption<float>("Hardcore.XPMultiplier", 1.0f);
-        semiHardcoreXpBonus = sConfigMgr->GetOption<float>("SemiHardcore.XPMultiplier", 1.0f);
-        selfCraftedXpBonus = sConfigMgr->GetOption<float>("SelfCrafted.XPMultiplier", 1.0f);
-        itemQualityLevelXpBonus = sConfigMgr->GetOption<float>("ItemQualityLevel.XPMultiplier", 1.0f);
-        questXpOnlyXpBonus = sConfigMgr->GetOption<float>("QuestXpOnly.XPMultiplier", 1.0f);
-
-        LoadStringToMap(hardcoreTitleRewards, sConfigMgr->GetOption<std::string>("Hardcore.TitleRewards", ""));
-        LoadStringToMap(semiHardcoreTitleRewards, sConfigMgr->GetOption<std::string>("SemiHardcore.TitleRewards", ""));
-        LoadStringToMap(selfCraftedTitleRewards, sConfigMgr->GetOption<std::string>("SelfCrafted.TitleRewards", ""));
-        LoadStringToMap(itemQualityLevelTitleRewards, sConfigMgr->GetOption<std::string>("ItemQualityLevel.TitleRewards", ""));
-        LoadStringToMap(slowXpGainTitleRewards, sConfigMgr->GetOption<std::string>("SlowXpGain.TitleRewards", ""));
-        LoadStringToMap(verySlowXpGainTitleRewards, sConfigMgr->GetOption<std::string>("VerySlowXpGain.TitleRewards", ""));
-        LoadStringToMap(questXpOnlyTitleRewards, sConfigMgr->GetOption<std::string>("QuestXpOnly.TitleRewards", ""));
-
-        LoadStringToMap(hardcoreTalentRewards, sConfigMgr->GetOption<std::string>("Hardcore.TalentRewards", ""));
-        LoadStringToMap(semiHardcoreTalentRewards, sConfigMgr->GetOption<std::string>("SemiHardcore.TalentRewards", ""));
-        LoadStringToMap(selfCraftedTalentRewards, sConfigMgr->GetOption<std::string>("SelfCrafted.TalentRewards", ""));
-        LoadStringToMap(itemQualityLevelTalentRewards, sConfigMgr->GetOption<std::string>("ItemQualityLevel.TalentRewards", ""));
-        LoadStringToMap(slowXpGainTalentRewards, sConfigMgr->GetOption<std::string>("SlowXpGain.TalentRewards", ""));
-        LoadStringToMap(verySlowXpGainTalentRewards, sConfigMgr->GetOption<std::string>("VerySlowXpGain.TalentRewards", ""));
-        LoadStringToMap(questXpOnlyTalentRewards, sConfigMgr->GetOption<std::string>("QuestXpOnly.TalentRewards", ""));
-
-        LoadStringToMap(hardcoreItemRewards, sConfigMgr->GetOption<std::string>("Hardcore.ItemRewards", ""));
-        LoadStringToMap(semiHardcoreItemRewards, sConfigMgr->GetOption<std::string>("SemiHardcore.ItemRewards", ""));
-        LoadStringToMap(selfCraftedItemRewards, sConfigMgr->GetOption<std::string>("SelfCrafted.ItemRewards", ""));
-        LoadStringToMap(itemQualityLevelItemRewards, sConfigMgr->GetOption<std::string>("ItemQualityLevel.ItemRewards", ""));
-        LoadStringToMap(slowXpGainItemRewards, sConfigMgr->GetOption<std::string>("SlowXpGain.ItemRewards", ""));
-        LoadStringToMap(verySlowXpGainItemRewards, sConfigMgr->GetOption<std::string>("VerySlowXpGain.ItemRewards", ""));
-        LoadStringToMap(questXpOnlyItemRewards, sConfigMgr->GetOption<std::string>("QuestXpOnly.ItemRewards", ""));
-    }
-
-public:
-    ChallengeModes_WorldScript() : WorldScript("ChallengeModes_WorldScript") { }
-
-    void OnBeforeConfigLoad(bool /*reload*/) override
-    {
-        LoadConfig();
+            hardcoreXpBonus         = sConfigMgr->GetOption<float>("Hardcore.XPMultiplier", 1.0f);
+            semiHardcoreXpBonus     = sConfigMgr->GetOption<float>("SemiHardcore.XPMultiplier", 1.0f);
+            selfCraftedXpBonus      = sConfigMgr->GetOption<float>("SelfCrafted.XPMultiplier", 1.0f);
+            itemQualityLevelXpBonus = sConfigMgr->GetOption<float>("ItemQualityLevel.XPMultiplier", 1.0f);
+            questXpOnlyXpBonus      = sConfigMgr->GetOption<float>("QuestXpOnly.XPMultiplier", 1.0f);
+        }
     }
 };
 
 class ChallengeMode : public PlayerScript
 {
-private:
-    std::map<uint8, uint32> titleRewardMap, talentRewardMap, itemRewardMap;
-    float xpModifier;
-    uint8 settingsIndex;
-    bool challengeEnabled;
-
 public:
     explicit ChallengeMode(const char *scriptName,
-                           std::map<uint8, uint32> &titleRewardMap,
-                           std::map<uint8, uint32> &talentRewardMap,
-                           std::map<uint8, uint32> &itemRewardMap,
+                           std::unordered_map<uint8, uint32> &titleRewardMap,
+                           std::unordered_map<uint8, uint32> &talentRewardMap,
+                           std::unordered_map<uint8, uint32> &itemRewardMap,
                            float xpModifier,
                            uint8 settingsIndex,
                            bool challengeEnabled)
             : PlayerScript(scriptName), xpModifier(xpModifier), settingsIndex(settingsIndex), challengeEnabled(challengeEnabled)
     { }
+
+    static bool mapContainsKey(std::unordered_map<uint8, uint32>& mapToCheck, uint8 key)
+    {
+        return (mapToCheck.find(key) != mapToCheck.end());
+    }
 
     void OnGiveXP(Player* player, uint32& amount, Unit* /*victim*/) override
     {
@@ -170,6 +123,12 @@ public:
             player->SendItemRetrievalMail({ { itemEntry, 1 } });
         }
     }
+
+private:
+    std::unordered_map<uint8, uint32> titleRewardMap, talentRewardMap, itemRewardMap;
+    float xpModifier;
+    uint8 settingsIndex;
+    bool challengeEnabled;
 };
 
 class ChallengeMode_Hardcore : public ChallengeMode
@@ -227,11 +186,10 @@ public:
         {
             if (Item* pItem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, i))
             {
-                if (pItem->GetTemplate() && (!pItem->IsEquipped()))
+                if (pItem->GetTemplate() && !pItem->IsEquipped())
                     continue;
                 uint8 slot = pItem->GetSlot();
                 ChatHandler(player->GetSession()).PSendSysMessage("|cffDA70D6You have lost your |cffffffff|Hitem:%d:0:0:0:0:0:0:0:0|h[%s]|h|r", pItem->GetEntry(), pItem->GetTemplate()->Name1.c_str());
-                LootStoreItem storeItem = LootStoreItem(pItem->GetEntry(), 0, 100, false, LOOT_MODE_DEFAULT, 0, 1, 1);
                 player->DestroyItem(INVENTORY_SLOT_BAG_0, slot, true);
             }
         }
@@ -328,6 +286,16 @@ public:
                                                      SETTING_SLOW_XP_GAIN,
                                                      slowXpGainEnable)
     {}
+
+    void OnGiveXP(Player* player, uint32& amount, Unit* victim) override
+    {
+        ChallengeMode::OnGiveXP(player, amount, victim);
+    }
+
+    void OnLevelChanged(Player* player, uint8 oldlevel) override
+    {
+        ChallengeMode::OnLevelChanged(player, oldlevel);
+    }
 };
 
 class ChallengeMode_VerySlowXpGain : public ChallengeMode
@@ -412,11 +380,6 @@ public:
         }
     };
 
-    GameObjectAI* GetAI(GameObject* object) const override
-    {
-        return new gobject_challenge_modesAI(object);
-    }
-
     bool OnGossipHello(Player* player, GameObject* go) override
     {
         // To workaround an issue with loading PlayerSettingVectors, we first get the largest value once
@@ -462,9 +425,12 @@ public:
         CloseGossipMenuFor(player);
         return true;
     }
+
+    GameObjectAI* GetAI(GameObject* object) const override
+    {
+        return new gobject_challenge_modesAI(object);
+    }
 };
-
-
 
 // Add all scripts in one
 void AddSC_mod_challenge_modes()
