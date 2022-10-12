@@ -1,6 +1,11 @@
 # AzerothCore Challenge Modes
 Challenge Modes Module for AzerothCore
 
+##Please note!
+A critical AzerothCore bug is preventing this module from working correctly. Please do not enable this module until this PR has been merged:
+https://github.com/azerothcore/azerothcore-wotlk/pull/13338
+It is safe to use the module, but it will not be able to properly check your enabled challenges - please disable it in the config for now.
+
 This module adds the following challenge modes:
 
 - **Hardcore** - Players who die are permanently ghosts and can never be revived.
