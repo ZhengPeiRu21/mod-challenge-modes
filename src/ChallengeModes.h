@@ -45,34 +45,34 @@ public:
     std::unordered_map<uint8, uint32> hardcoreItemRewards, semiHardcoreItemRewards, selfCraftedItemRewards, itemQualityLevelItemRewards, slowXpGainItemRewards, verySlowXpGainItemRewards, questXpOnlyItemRewards, ironManItemRewards;
     std::unordered_map<uint8, uint32> hardcoreTalentRewards, semiHardcoreTalentRewards, selfCraftedTalentRewards, itemQualityLevelTalentRewards, slowXpGainTalentRewards, verySlowXpGainTalentRewards, questXpOnlyTalentRewards, ironManTalentRewards;
 
-    std::unordered_map<std::string, std::unordered_map<uint8, uint32>> rewardConfigMap =
+    std::unordered_map<std::string, std::unordered_map<uint8, uint32>*> rewardConfigMap =
             {
-                    { "Hardcore.TitleRewards",                hardcoreTitleRewards          },
-                    { "SemiHardcore.TitleRewards",            semiHardcoreTitleRewards      },
-                    { "SelfCrafted.TitleRewards",             selfCraftedTitleRewards       },
-                    { "ItemQualityLevel.TitleRewards",        itemQualityLevelTitleRewards  },
-                    { "SlowXpGain.TitleRewards",              slowXpGainTitleRewards        },
-                    { "VerySlowXpGain.TitleRewards",          verySlowXpGainTitleRewards    },
-                    { "QuestXpOnly.TitleRewards",             questXpOnlyTitleRewards       },
-                    { "IronMan.TitleRewards",                 ironManTitleRewards           },
+                    { "Hardcore.TitleRewards",                &hardcoreTitleRewards          },
+                    { "SemiHardcore.TitleRewards",            &semiHardcoreTitleRewards      },
+                    { "SelfCrafted.TitleRewards",             &selfCraftedTitleRewards       },
+                    { "ItemQualityLevel.TitleRewards",        &itemQualityLevelTitleRewards  },
+                    { "SlowXpGain.TitleRewards",              &slowXpGainTitleRewards        },
+                    { "VerySlowXpGain.TitleRewards",          &verySlowXpGainTitleRewards    },
+                    { "QuestXpOnly.TitleRewards",             &questXpOnlyTitleRewards       },
+                    { "IronMan.TitleRewards",                 &ironManTitleRewards           },
 
-                    { "Hardcore.TalentRewards",               hardcoreTalentRewards         },
-                    { "SemiHardcore.TalentRewards",           semiHardcoreTalentRewards     },
-                    { "SelfCrafted.TalentRewards",            selfCraftedTalentRewards      },
-                    { "ItemQualityLevel.TalentRewards",       itemQualityLevelTalentRewards },
-                    { "SlowXpGain.TalentRewards",             slowXpGainTalentRewards       },
-                    { "VerySlowXpGain.TalentRewards",         verySlowXpGainTalentRewards   },
-                    { "QuestXpOnly.TalentRewards",            questXpOnlyTalentRewards      },
-                    { "IronMan.TalentRewards",                ironManTalentRewards          },
+                    { "Hardcore.TalentRewards",               &hardcoreTalentRewards         },
+                    { "SemiHardcore.TalentRewards",           &semiHardcoreTalentRewards     },
+                    { "SelfCrafted.TalentRewards",            &selfCraftedTalentRewards      },
+                    { "ItemQualityLevel.TalentRewards",       &itemQualityLevelTalentRewards },
+                    { "SlowXpGain.TalentRewards",             &slowXpGainTalentRewards       },
+                    { "VerySlowXpGain.TalentRewards",         &verySlowXpGainTalentRewards   },
+                    { "QuestXpOnly.TalentRewards",            &questXpOnlyTalentRewards      },
+                    { "IronMan.TalentRewards",                &ironManTalentRewards          },
 
-                    { "Hardcore.ItemRewards",                 hardcoreItemRewards           },
-                    { "SemiHardcore.ItemRewards",             semiHardcoreItemRewards       },
-                    { "SelfCrafted.ItemRewards",              selfCraftedItemRewards        },
-                    { "ItemQualityLevel.ItemRewards",         itemQualityLevelItemRewards   },
-                    { "SlowXpGain.ItemRewards",               slowXpGainItemRewards         },
-                    { "VerySlowXpGain.ItemRewards",           verySlowXpGainItemRewards     },
-                    { "QuestXpOnly.ItemRewards",              questXpOnlyItemRewards        },
-                    { "IronMan.ItemRewards",                  ironManItemRewards            },
+                    { "Hardcore.ItemRewards",                 &hardcoreItemRewards           },
+                    { "SemiHardcore.ItemRewards",             &semiHardcoreItemRewards       },
+                    { "SelfCrafted.ItemRewards",              &selfCraftedItemRewards        },
+                    { "ItemQualityLevel.ItemRewards",         &itemQualityLevelItemRewards   },
+                    { "SlowXpGain.ItemRewards",               &slowXpGainItemRewards         },
+                    { "VerySlowXpGain.ItemRewards",           &verySlowXpGainItemRewards     },
+                    { "QuestXpOnly.ItemRewards",              &questXpOnlyItemRewards        },
+                    { "IronMan.ItemRewards",                  &ironManItemRewards            },
             };
 
     [[nodiscard]] bool enabled() const { return challengesEnabled; }

@@ -177,8 +177,8 @@ private:
         {
             for (auto& [confName, rewardMap] : sChallengeModes->rewardConfigMap)
             {
-                rewardMap.clear();
-                LoadStringToMap(rewardMap, sConfigMgr->GetOption<std::string>(confName, ""));
+                rewardMap->clear();
+                LoadStringToMap(*rewardMap, sConfigMgr->GetOption<std::string>(confName, ""));
             }
 
             sChallengeModes->hardcoreEnable          = sConfigMgr->GetOption<bool>("Hardcore.Enable", true);
@@ -243,13 +243,10 @@ public:
             std::string tNameLink = handler.GetNameLink(player);
             std::string titleNameStr = Acore::StringFormat(player->getGender() == GENDER_MALE ? titleInfo->nameMale[handler.GetSessionDbcLocale()] : titleInfo->nameFemale[handler.GetSessionDbcLocale()], player->GetName());
             player->SetTitle(titleInfo);
-            handler.PSendSysMessage(LANG_TITLE_ADD_RES, uint32(titleRewardMap->at(level)), titleNameStr, tNameLink);
         }
         if (mapContainsKey(talentRewardMap, level))
         {
-            uint8 talentPoints = player->GetFreeTalentPoints() + talentRewardMap->at(level);
-            player->ToPlayer()->SetFreeTalentPoints(talentPoints);
-            player->ToPlayer()->SendTalentsInfoData(false);
+            player->RewardExtraBonusTalentPoints(talentRewardMap->at(level));
         }
         if (mapContainsKey(itemRewardMap, level))
         {
