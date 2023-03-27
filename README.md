@@ -22,3 +22,5 @@ Rewards for reaching level thresholds for each challenge can be added using the 
 - Titles
 - Talent Points
 - Increased XP Rate
+
+Please note that this module uses Player Settings to store enabled challenges, so please ensure EnablePlayerSettings is set to 1 in your worldserver.conf.
