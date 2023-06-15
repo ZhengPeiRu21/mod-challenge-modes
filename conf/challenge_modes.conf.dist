@@ -14,7 +14,7 @@
 #                     1 - Enabled
 #
 
-ChallengeModes.Enable = 0
+ChallengeModes.Enable = 1
 #
 #    The following challenge modes are available:
 #        Hardcore - Players who die are permanently ghosts and can never be revived.
