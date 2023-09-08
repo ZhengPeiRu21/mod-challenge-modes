@@ -10,6 +10,7 @@
 #include "Item.h"
 #include "ItemTemplate.h"
 #include "GameObjectAI.h"
+#include "Pet.h"
 #include <map>
 
 

@@ -421,6 +421,10 @@ public:
         }
         if (victim)
         {
+            // Still award XP to pets - they won't be able to pass the player's level
+            Pet* pet = player->GetPet();
+            if (pet && xpSource == XPSOURCE_KILL)
+                pet->GivePetXP(player->GetGroup() ? amount / 2 : amount);
             amount = 0;
         }
         else
