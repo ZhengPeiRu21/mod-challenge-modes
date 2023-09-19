@@ -265,6 +265,44 @@ class ChallengeMode_Hardcore : public ChallengeMode
 public:
     ChallengeMode_Hardcore() : ChallengeMode("ChallengeMode_Hardcore", SETTING_HARDCORE) {}
 
+    void OnLogin(Player* player) override
+    {
+        if (!sChallengeModes->challengeEnabledForPlayer(SETTING_HARDCORE, player) || !sChallengeModes->challengeEnabledForPlayer(HARDCORE_DEAD, player))
+        {
+            return;
+        }
+        player->KillPlayer();
+        player->GetSession()->KickPlayer("Hardcore character died");
+    }
+
+    void OnPlayerReleasedGhost(Player* player) override
+    {
+        if (!sChallengeModes->challengeEnabledForPlayer(SETTING_HARDCORE, player))
+        {
+            return;
+        }
+        player->UpdatePlayerSetting("mod-challenge-modes", HARDCORE_DEAD, 1);
+        player->GetSession()->KickPlayer("Hardcore character died");
+    }
+
+    void OnPVPKill(Player* /*killer*/, Player* killed) override
+    {
+        if (!sChallengeModes->challengeEnabledForPlayer(SETTING_HARDCORE, killed))
+        {
+            return;
+        }
+        killed->UpdatePlayerSetting("mod-challenge-modes", HARDCORE_DEAD, 1);
+    }
+
+    void OnPlayerKilledByCreature(Creature* /*killer*/, Player* killed) override
+    {
+        if (!sChallengeModes->challengeEnabledForPlayer(SETTING_HARDCORE, killed))
+        {
+            return;
+        }
+        killed->UpdatePlayerSetting("mod-challenge-modes", HARDCORE_DEAD, 1);
+    }
+
     void OnPlayerResurrect(Player* player, float /*restore_percent*/, bool /*applySickness*/) override
     {
         if (!sChallengeModes->challengeEnabledForPlayer(SETTING_HARDCORE, player))
@@ -272,7 +310,9 @@ public:
             return;
         }
         // A better implementation is to not allow the resurrect but this will need a new hook added first
+        player->UpdatePlayerSetting("mod-challenge-modes", HARDCORE_DEAD, 1);
         player->KillPlayer();
+        player->GetSession()->KickPlayer("Hardcore character died");
     }
 
     void OnGiveXP(Player* player, uint32& amount, Unit* victim, uint8 xpSource) override
