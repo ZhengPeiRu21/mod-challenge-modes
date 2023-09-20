@@ -39,6 +39,8 @@ bool ChallengeModes::challengeEnabled(ChallengeModeSettings setting) const
             return questXpOnlyEnable;
         case SETTING_IRON_MAN:
             return ironManEnable;
+        case HARDCORE_DEAD:
+            break;
     }
     return false;
 }
@@ -63,6 +65,8 @@ float ChallengeModes::getXpBonusForChallenge(ChallengeModeSettings setting) cons
             return questXpOnlyXpBonus;
         case SETTING_IRON_MAN:
             return 1;
+        case HARDCORE_DEAD:
+            break;
     }
     return 1;
 }
@@ -87,6 +91,8 @@ const std::unordered_map<uint8, uint32> *ChallengeModes::getTitleMapForChallenge
             return &questXpOnlyTitleRewards;
         case SETTING_IRON_MAN:
             return &ironManTitleRewards;
+        case HARDCORE_DEAD:
+            break;
     }
     return {};
 }
@@ -111,6 +117,8 @@ const std::unordered_map<uint8, uint32> *ChallengeModes::getTalentMapForChalleng
             return &questXpOnlyTalentRewards;
         case SETTING_IRON_MAN:
             return &ironManTalentRewards;
+        case HARDCORE_DEAD:
+            break;
     }
     return {};
 }
@@ -135,6 +143,8 @@ const std::unordered_map<uint8, uint32> *ChallengeModes::getItemMapForChallenge(
             return &questXpOnlyItemRewards;
         case SETTING_IRON_MAN:
             return &ironManItemRewards;
+        case HARDCORE_DEAD:
+            break;
     }
     return {};
 }
