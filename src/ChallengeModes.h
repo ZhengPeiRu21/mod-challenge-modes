@@ -42,6 +42,7 @@ public:
     static ChallengeModes* instance();
 
     bool challengesEnabled, hardcoreEnable, semiHardcoreEnable, selfCraftedEnable, itemQualityLevelEnable, slowXpGainEnable, verySlowXpGainEnable, questXpOnlyEnable, ironManEnable;
+    uint32 hardcoreDisableLevel, semiHardcoreDisableLevel, selfCraftedDisableLevel, itemQualityLevelDisableLevel, slowXpGainDisableLevel, verySlowXpGainDisableLevel, questXpOnlyDisableLevel, ironManDisableLevel;
     float hardcoreXpBonus, semiHardcoreXpBonus, selfCraftedXpBonus, itemQualityLevelXpBonus, questXpOnlyXpBonus;
     std::unordered_map<uint8, uint32> hardcoreTitleRewards, semiHardcoreTitleRewards, selfCraftedTitleRewards, itemQualityLevelTitleRewards, slowXpGainTitleRewards, verySlowXpGainTitleRewards, questXpOnlyTitleRewards, ironManTitleRewards;
     std::unordered_map<uint8, uint32> hardcoreItemRewards, semiHardcoreItemRewards, selfCraftedItemRewards, itemQualityLevelItemRewards, slowXpGainItemRewards, verySlowXpGainItemRewards, questXpOnlyItemRewards, ironManItemRewards;
@@ -79,6 +80,7 @@ public:
 
     [[nodiscard]] bool enabled() const { return challengesEnabled; }
     [[nodiscard]] bool challengeEnabled(ChallengeModeSettings setting) const;
+    [[nodiscard]] uint32 getDisableLevel(ChallengeModeSettings setting) const;
     [[nodiscard]] float getXpBonusForChallenge(ChallengeModeSettings setting) const;
     bool challengeEnabledForPlayer(ChallengeModeSettings setting, Player* player) const;
     [[nodiscard]] const std::unordered_map<uint8, uint32> *getTitleMapForChallenge(ChallengeModeSettings setting) const;

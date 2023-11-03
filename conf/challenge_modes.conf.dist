@@ -46,6 +46,10 @@ ChallengeModes.Enable = 1
 #        Rewards items for players when reaching the given levels with the challenge enabled.
 #        The IDs used are item entry IDs. The format is the level followed by the item ID, separated by commas.
 #        Example: <Challenge>.ItemRewards = "80 54811"
+#    <Challenge>.DisableLevel = ""
+#        When the player reaches this level, the challenge will be automatically disabled.
+#        To never disable a challenge, set to 0.
+#        Example: <Challenge>.DisableLevel = 80
 #
 #
 
@@ -54,42 +58,50 @@ Hardcore.TitleRewards = ""
 Hardcore.XPMultiplier = 1
 Hardcore.TalentRewards = ""
 Hardcore.ItemRewards = ""
+Hardcore.DisableLevel = 0
 
 SemiHardcore.Enable = 1
 SemiHardcore.TitleRewards = ""
 SemiHardcore.XPMultiplier = 1
 SemiHardcore.TalentRewards = ""
 SemiHardcore.ItemRewards = ""
+SemiHardcore.DisableLevel = 0
 
 SelfCrafted.Enable = 1
 SelfCrafted.TitleRewards = ""
 SelfCrafted.XPMultiplier = 1
 SelfCrafted.TalentRewards = ""
 SelfCrafted.ItemRewards = ""
+SelfCrafted.DisableLevel = 0
 
 ItemQualityLevel.Enable = 1
 ItemQualityLevel.TitleRewards = ""
 ItemQualityLevel.XPMultiplier = 1
 ItemQualityLevel.TalentRewards = ""
 ItemQualityLevel.ItemRewards = ""
+ItemQualityLevel.DisableLevel = 0
 
 SlowXpGain.Enable = 1
 SlowXpGain.TitleRewards = ""
 SlowXpGain.TalentRewards = ""
 SlowXpGain.ItemRewards = ""
+SlowXpGain.DisableLevel = 0
 
 VerySlowXpGain.Enable = 1
 VerySlowXpGain.TitleRewards = ""
 VerySlowXpGain.TalentRewards = ""
 VerySlowXpGain.ItemRewards = ""
+VerySlowXpGain.DisableLevel = 0
 
 QuestXpOnly.Enable = 1
 QuestXpOnly.TitleRewards = ""
 QuestXpOnly.XPMultiplier = 1
 QuestXpOnly.TalentRewards = ""
 QuestXpOnly.ItemRewards = ""
+QuestXpOnly.DisableLevel = 0
 
 IronMan.Enable = 1
 IronMan.TitleRewards = ""
 IronMan.TalentRewards = ""
 IronMan.ItemRewards = ""
+IronMan.DisableLevel = 0

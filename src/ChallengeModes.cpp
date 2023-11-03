@@ -45,6 +45,32 @@ bool ChallengeModes::challengeEnabled(ChallengeModeSettings setting) const
     return false;
 }
 
+uint32 ChallengeModes::getDisableLevel(ChallengeModeSettings setting) const
+{
+    switch (setting)
+    {
+        case SETTING_HARDCORE:
+            return hardcoreDisableLevel;
+        case SETTING_SEMI_HARDCORE:
+            return semiHardcoreDisableLevel;
+        case SETTING_SELF_CRAFTED:
+            return selfCraftedDisableLevel;
+        case SETTING_ITEM_QUALITY_LEVEL:
+            return itemQualityLevelDisableLevel;
+        case SETTING_SLOW_XP_GAIN:
+            return slowXpGainDisableLevel;
+        case SETTING_VERY_SLOW_XP_GAIN:
+            return verySlowXpGainDisableLevel;
+        case SETTING_QUEST_XP_ONLY:
+            return questXpOnlyDisableLevel;
+        case SETTING_IRON_MAN:
+            return ironManDisableLevel;
+        case HARDCORE_DEAD:
+            break;
+    }
+    return 0;
+}
+
 float ChallengeModes::getXpBonusForChallenge(ChallengeModeSettings setting) const
 {
     switch (setting)
@@ -200,6 +226,15 @@ private:
             sChallengeModes->questXpOnlyEnable       = sConfigMgr->GetOption<bool>("QuestXpOnly.Enable", true);
             sChallengeModes->ironManEnable           = sConfigMgr->GetOption<bool>("IronMan.Enable", true);
 
+            sChallengeModes->hardcoreDisableLevel          = sConfigMgr->GetOption<uint32>("Hardcore.DisableLevel", 0);
+            sChallengeModes->semiHardcoreDisableLevel      = sConfigMgr->GetOption<uint32>("SemiHardcore.DisableLevel", 0);
+            sChallengeModes->selfCraftedDisableLevel       = sConfigMgr->GetOption<uint32>("SelfCrafted.DisableLevel", 0);
+            sChallengeModes->itemQualityLevelDisableLevel  = sConfigMgr->GetOption<uint32>("ItemQualityLevel.DisableLevel", 0);
+            sChallengeModes->slowXpGainDisableLevel        = sConfigMgr->GetOption<uint32>("SlowXpGain.DisableLevel", 0);
+            sChallengeModes->verySlowXpGainDisableLevel    = sConfigMgr->GetOption<uint32>("VerySlowXpGain.DisableLevel", 0);
+            sChallengeModes->questXpOnlyDisableLevel       = sConfigMgr->GetOption<uint32>("QuestXpOnly.DisableLevel", 0);
+            sChallengeModes->ironManDisableLevel           = sConfigMgr->GetOption<uint32>("IronMan.DisableLevel", 0);
+
             sChallengeModes->hardcoreXpBonus         = sConfigMgr->GetOption<float>("Hardcore.XPMultiplier", 1.0f);
             sChallengeModes->semiHardcoreXpBonus     = sConfigMgr->GetOption<float>("SemiHardcore.XPMultiplier", 1.0f);
             sChallengeModes->selfCraftedXpBonus      = sConfigMgr->GetOption<float>("SelfCrafted.XPMultiplier", 1.0f);
@@ -263,6 +298,10 @@ public:
             // Mail item to player
             uint32 itemEntry = itemRewardMap->at(level);
             player->SendItemRetrievalMail({ { itemEntry, 1 } });
+        }
+        if (sChallengeModes->getDisableLevel(settingName) && sChallengeModes->getDisableLevel(settingName) <= level)
+        {
+            player->UpdatePlayerSetting("mod-challenge-modes", settingName, 0);
         }
     }
 
