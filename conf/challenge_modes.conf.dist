@@ -54,54 +54,73 @@ ChallengeModes.Enable = 1
 #
 
 Hardcore.Enable = 1
-Hardcore.TitleRewards = ""
+Hardcore.TitleRewards = "189"
 Hardcore.XPMultiplier = 1
-Hardcore.TalentRewards = ""
-Hardcore.ItemRewards = ""
+Hardcore.TalentRewards = "25 3"
+Hardcore.ItemRewards = "123"
+Hardcore.ItemRewardAmount = 1
 Hardcore.DisableLevel = 0
+#Hardcore.AchievementReward = "UNUSED"
 
 SemiHardcore.Enable = 1
-SemiHardcore.TitleRewards = ""
+SemiHardcore.TitleRewards = "190"
 SemiHardcore.XPMultiplier = 1
-SemiHardcore.TalentRewards = ""
+SemiHardcore.TalentRewards = "25 2"
 SemiHardcore.ItemRewards = ""
+SemiHardcore.ItemRewardAmount = 1
 SemiHardcore.DisableLevel = 0
+#SemiHardcore.AchievementReward = "UNUSED"
 
 SelfCrafted.Enable = 1
-SelfCrafted.TitleRewards = ""
+SelfCrafted.TitleRewards = "191"
 SelfCrafted.XPMultiplier = 1
-SelfCrafted.TalentRewards = ""
+SelfCrafted.TalentRewards = "25 1"
 SelfCrafted.ItemRewards = ""
+SelfCrafted.ItemRewardAmount = 1
 SelfCrafted.DisableLevel = 0
+#SelfCrafted.AchievementReward = "UNUSED"
 
 ItemQualityLevel.Enable = 1
-ItemQualityLevel.TitleRewards = ""
+ItemQualityLevel.TitleRewards = "193"
 ItemQualityLevel.XPMultiplier = 1
-ItemQualityLevel.TalentRewards = ""
+ItemQualityLevel.TalentRewards = "25 1"
 ItemQualityLevel.ItemRewards = ""
+ItemQualityLevel.ItemRewardAmount = 1
 ItemQualityLevel.DisableLevel = 0
+ItemQualityLevel.AchievementReward = "UNUSED"
 
 SlowXpGain.Enable = 1
-SlowXpGain.TitleRewards = ""
-SlowXpGain.TalentRewards = ""
+SlowXpGain.TitleRewards = "192"
+SlowXpGain.TalentRewards = "25 1"
 SlowXpGain.ItemRewards = ""
+SlowXpGain.ItemRewardAmount = 1
 SlowXpGain.DisableLevel = 0
+SlowXpGain.XPMultiplier = 0.50
+#SlowXpGain.AchievementReward = "UNUSED"
 
 VerySlowXpGain.Enable = 1
-VerySlowXpGain.TitleRewards = ""
-VerySlowXpGain.TalentRewards = ""
+VerySlowXpGain.TitleRewards = "194"
+VerySlowXpGain.TalentRewards = "25 2"
 VerySlowXpGain.ItemRewards = ""
+VerySlowXpGain.ItemRewardAmount = 1
 VerySlowXpGain.DisableLevel = 0
+VerySlowXpGain.XPMultiplier = 0.25
+#VerySlowXpGain.AchievementReward = "UNUSED"
 
 QuestXpOnly.Enable = 1
-QuestXpOnly.TitleRewards = ""
+QuestXpOnly.TitleRewards = "194"
 QuestXpOnly.XPMultiplier = 1
-QuestXpOnly.TalentRewards = ""
+QuestXpOnly.TalentRewards = "25 1"
 QuestXpOnly.ItemRewards = ""
+QuestXpOnly.ItemRewardAmount = 1
 QuestXpOnly.DisableLevel = 0
+#QuestXpOnly.AchievementReward = "UNUSED"
 
 IronMan.Enable = 1
-IronMan.TitleRewards = ""
-IronMan.TalentRewards = ""
+IronMan.TitleRewards = "195"
+IronMan.TalentRewards = "25 5"
 IronMan.ItemRewards = ""
+IronMan.ItemRewardAmount = 1
 IronMan.DisableLevel = 0
+IronMan.XPMultiplier = 1
+#IronMan.AchievementReward = "UNUSED"

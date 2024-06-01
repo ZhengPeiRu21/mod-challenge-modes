@@ -84,13 +84,13 @@ float ChallengeModes::getXpBonusForChallenge(ChallengeModeSettings setting) cons
         case SETTING_ITEM_QUALITY_LEVEL:
             return itemQualityLevelXpBonus;
         case SETTING_SLOW_XP_GAIN:
-            return 0.5f;
+            return slowXpGainBonus;
         case SETTING_VERY_SLOW_XP_GAIN:
-            return 0.25f;
+            return verySlowXpGainBonus;
         case SETTING_QUEST_XP_ONLY:
             return questXpOnlyXpBonus;
         case SETTING_IRON_MAN:
-            return 1;
+            return ironManXpBonus;
         case HARDCORE_DEAD:
             break;
     }
@@ -175,6 +175,58 @@ const std::unordered_map<uint8, uint32> *ChallengeModes::getItemMapForChallenge(
     return {};
 }
 
+uint32 ChallengeModes::getItemRewardAmount(ChallengeModeSettings setting) const
+{
+    switch (setting)
+    {
+        case SETTING_HARDCORE:
+            return hardcoreItemRewardAmount;
+        case SETTING_SEMI_HARDCORE:
+            return semiHardcoreItemRewardAmount;
+        case SETTING_SELF_CRAFTED:
+            return selfCraftedItemRewardAmount;
+        case SETTING_ITEM_QUALITY_LEVEL:
+            return itemQualityLevelItemRewardAmount;
+        case SETTING_SLOW_XP_GAIN:
+            return slowXpGainItemRewardAmount;
+        case SETTING_VERY_SLOW_XP_GAIN:
+            return verySlowXpGainItemRewardAmount;
+        case SETTING_QUEST_XP_ONLY:
+            return questXpOnlyItemRewardAmount;
+        case SETTING_IRON_MAN:
+            return ironManItemRewardAmount;
+        case HARDCORE_DEAD:
+            break;
+    }
+    return 0;
+}
+
+// const std::unordered_map<uint8, uint32> *ChallengeModes::getAchievementMapForChallenge(ChallengeModeSettings setting) const
+// {
+//     switch (setting)
+//     {
+//         case SETTING_HARDCORE:
+//             return &hardcoreAchievementReward;
+//         case SETTING_SEMI_HARDCORE:
+//             return &semiHardcoreAchievementReward;
+//         case SETTING_SELF_CRAFTED:
+//             return &selfCraftedAchievementReward;
+//         case SETTING_ITEM_QUALITY_LEVEL:
+//             return &itemQualityLevelAchievementReward;
+//         case SETTING_SLOW_XP_GAIN:
+//             return &slowXpGainAchievementReward;
+//         case SETTING_VERY_SLOW_XP_GAIN:
+//             return &verySlowXpGainAchievementReward;
+//         case SETTING_QUEST_XP_ONLY:
+//             return &questXpOnlyAchievementReward;
+//         case SETTING_IRON_MAN:
+//             return &ironManAchievementReward;
+//         case HARDCORE_DEAD:
+//             break;
+//     }
+//     return {};
+// }
+
 class ChallengeModes_WorldScript : public WorldScript
 {
 public:
@@ -240,6 +292,18 @@ private:
             sChallengeModes->selfCraftedXpBonus      = sConfigMgr->GetOption<float>("SelfCrafted.XPMultiplier", 1.0f);
             sChallengeModes->itemQualityLevelXpBonus = sConfigMgr->GetOption<float>("ItemQualityLevel.XPMultiplier", 1.0f);
             sChallengeModes->questXpOnlyXpBonus      = sConfigMgr->GetOption<float>("QuestXpOnly.XPMultiplier", 1.0f);
+            sChallengeModes->slowXpGainBonus         = sConfigMgr->GetOption<float>("SlowXpGain.XPMultiplier", 0.50f);
+            sChallengeModes->verySlowXpGainBonus     = sConfigMgr->GetOption<float>("VerySlowXpGain.XPMultiplier", 0.25f);
+            sChallengeModes->ironManXpBonus          = sConfigMgr->GetOption<float>("IronMan.XPMultiplier", 1.0f);
+
+            sChallengeModes->hardcoreItemRewardAmount         = sConfigMgr->GetOption<uint32>("Hardcore.ItemRewardAmount", 1);
+            sChallengeModes->semiHardcoreItemRewardAmount     = sConfigMgr->GetOption<uint32>("SemiHardcore.ItemRewardAmount", 1);
+            sChallengeModes->selfCraftedItemRewardAmount      = sConfigMgr->GetOption<uint32>("SelfCrafted.ItemRewardAmount", 1);
+            sChallengeModes->itemQualityLevelItemRewardAmount = sConfigMgr->GetOption<uint32>("ItemQualityLevel.ItemRewardAmount", 1);
+            sChallengeModes->slowXpGainItemRewardAmount       = sConfigMgr->GetOption<uint32>("SlowXpGain.ItemRewardAmount", 1);
+            sChallengeModes->verySlowXpGainItemRewardAmount   = sConfigMgr->GetOption<uint32>("VerySlowXpGain.ItemRewardAmount", 1);
+            sChallengeModes->questXpOnlyItemRewardAmount      = sConfigMgr->GetOption<uint32>("QuestXpOnly.ItemRewardAmount", 1);
+            sChallengeModes->ironManItemRewardAmount          = sConfigMgr->GetOption<uint32>("IronMan.ItemRewardAmount", 1);
         }
     }
 };
@@ -266,44 +330,50 @@ public:
         amount *= sChallengeModes->getXpBonusForChallenge(settingName);
     }
 
-    void OnLevelChanged(Player* player, uint8 /*oldlevel*/) override
+void OnLevelChanged(Player* player, uint8 /*oldlevel*/) override
+{
+    if (!sChallengeModes->challengeEnabledForPlayer(settingName, player))
     {
-        if (!sChallengeModes->challengeEnabledForPlayer(settingName, player))
+        return;
+    }
+
+    const std::unordered_map<uint8, uint32>* titleRewardMap = sChallengeModes->getTitleMapForChallenge(settingName);
+    const std::unordered_map<uint8, uint32>* talentRewardMap = sChallengeModes->getTalentMapForChallenge(settingName);
+    const std::unordered_map<uint8, uint32>* itemRewardMap = sChallengeModes->getItemMapForChallenge(settingName);
+    //const std::unordered_map<uint8, uint32>* achievementRewardMap = sChallengeModes->getAchievementMapForChallenge(settingName);
+    uint8 level = player->getLevel();
+
+    if (mapContainsKey(titleRewardMap, level))
+    {
+        CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(titleRewardMap->at(level));
+        if (!titleInfo)
         {
+            LOG_ERROR("mod-challenge-modes", "Invalid title ID {}!", titleRewardMap->at(level));
             return;
         }
-        const std::unordered_map<uint8, uint32> *titleRewardMap = sChallengeModes->getTitleMapForChallenge(settingName);
-        const std::unordered_map<uint8, uint32> *talentRewardMap = sChallengeModes->getTalentMapForChallenge(settingName);
-        const std::unordered_map<uint8, uint32> *itemRewardMap = sChallengeModes->getItemMapForChallenge(settingName);
-        uint8 level = player->getLevel();
-        if (mapContainsKey(titleRewardMap, level))
-        {
-            CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(titleRewardMap->at(level));
-            if (!titleInfo)
-            {
-                LOG_ERROR("mod-challenge-modes", "Invalid title ID {}!", titleRewardMap->at(level));
-                return;
-            }
-            ChatHandler handler(player->GetSession());
-            std::string tNameLink = handler.GetNameLink(player);
-            std::string titleNameStr = Acore::StringFormat(player->getGender() == GENDER_MALE ? titleInfo->nameMale[handler.GetSessionDbcLocale()] : titleInfo->nameFemale[handler.GetSessionDbcLocale()], player->GetName());
-            player->SetTitle(titleInfo);
-        }
-        if (mapContainsKey(talentRewardMap, level))
-        {
-            player->RewardExtraBonusTalentPoints(talentRewardMap->at(level));
-        }
-        if (mapContainsKey(itemRewardMap, level))
-        {
-            // Mail item to player
-            uint32 itemEntry = itemRewardMap->at(level);
-            player->SendItemRetrievalMail({ { itemEntry, 1 } });
-        }
-        if (sChallengeModes->getDisableLevel(settingName) && sChallengeModes->getDisableLevel(settingName) <= level)
-        {
-            player->UpdatePlayerSetting("mod-challenge-modes", settingName, 0);
-        }
+        ChatHandler handler(player->GetSession());
+        std::string tNameLink = handler.GetNameLink(player);
+        std::string titleNameStr = Acore::StringFormat(player->getGender() == GENDER_MALE ? titleInfo->nameMale[handler.GetSessionDbcLocale()] : titleInfo->nameFemale[handler.GetSessionDbcLocale()], player->GetName());
+        player->SetTitle(titleInfo);
     }
+
+    if (mapContainsKey(talentRewardMap, level))
+    {
+        player->RewardExtraBonusTalentPoints(talentRewardMap->at(level));
+    }
+
+    if (mapContainsKey(itemRewardMap, level))
+    {
+        uint32 itemEntry = itemRewardMap->at(level);
+        uint32 itemAmount = sChallengeModes->getItemRewardAmount(settingName); // Fetch item amount from config
+        player->SendItemRetrievalMail({ { itemEntry, itemAmount } });
+    }
+
+    if (sChallengeModes->getDisableLevel(settingName) && sChallengeModes->getDisableLevel(settingName) <= level)
+    {
+        player->UpdatePlayerSetting("mod-challenge-modes", settingName, 0);
+    }
+}
 
 private:
     ChallengeModeSettings settingName;
