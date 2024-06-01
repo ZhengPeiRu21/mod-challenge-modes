@@ -47,7 +47,7 @@ public:
     std::unordered_map<uint8, uint32> hardcoreTitleRewards, semiHardcoreTitleRewards, selfCraftedTitleRewards, itemQualityLevelTitleRewards, slowXpGainTitleRewards, verySlowXpGainTitleRewards, questXpOnlyTitleRewards, ironManTitleRewards;
     std::unordered_map<uint8, uint32> hardcoreItemRewards, semiHardcoreItemRewards, selfCraftedItemRewards, itemQualityLevelItemRewards, slowXpGainItemRewards, verySlowXpGainItemRewards, questXpOnlyItemRewards, ironManItemRewards;
     std::unordered_map<uint8, uint32> hardcoreTalentRewards, semiHardcoreTalentRewards, selfCraftedTalentRewards, itemQualityLevelTalentRewards, slowXpGainTalentRewards, verySlowXpGainTalentRewards, questXpOnlyTalentRewards, ironManTalentRewards;
-    //std::unordered_map<uint8, uint32> hardcoreAchievementReward, semiHardcoreAchievementReward, selfCraftedAchievementReward, itemQualityLevelAchievementReward, slowXpGainAchievementReward, verySlowXpGainAchievementReward, questXpOnlyAchievementReward, ironManAchievementReward;
+    std::unordered_map<uint8, uint32> hardcoreAchievementReward, semiHardcoreAchievementReward, selfCraftedAchievementReward, itemQualityLevelAchievementReward, slowXpGainAchievementReward, verySlowXpGainAchievementReward, questXpOnlyAchievementReward, ironManAchievementReward;
 
     std::unordered_map<std::string, std::unordered_map<uint8, uint32>*> rewardConfigMap =
             {
@@ -87,14 +87,14 @@ public:
                     // { "QuestXpOnly.ItemRewardAmount",         &questXpOnlyItemRewardAmount          },
                     // { "IronMan.ItemRewardAmount",             &ironManItemRewardAmount              },
 
-                    // { "Hardcore.AchievementReward",           &hardcoreAchievementReward            },
-                    // { "SemiHardcore.AchievementReward",       &semiHardcoreAchievementReward        },
-                    // { "SelfCrafted.AchievementReward",        &selfCraftedAchievementReward         },
-                    // { "ItemQualityLevel.AchievementReward",   &itemQualityLevelAchievementReward    },
-                    // { "SlowXpGain.AchievementReward",         &slowXpGainAchievementReward          },
-                    // { "VerySlowXpGain.AchievementReward",     &verySlowXpGainAchievementReward      },
-                    // { "QuestXpOnly.AchievementReward",        &questXpOnlyAchievementReward         },
-                    // { "IronMan.AchievementReward",            &ironManAchievementReward             }
+                    { "Hardcore.AchievementReward",           &hardcoreAchievementReward            },
+                    { "SemiHardcore.AchievementReward",       &semiHardcoreAchievementReward        },
+                    { "SelfCrafted.AchievementReward",        &selfCraftedAchievementReward         },
+                    { "ItemQualityLevel.AchievementReward",   &itemQualityLevelAchievementReward    },
+                    { "SlowXpGain.AchievementReward",         &slowXpGainAchievementReward          },
+                    { "VerySlowXpGain.AchievementReward",     &verySlowXpGainAchievementReward      },
+                    { "QuestXpOnly.AchievementReward",        &questXpOnlyAchievementReward         },
+                    { "IronMan.AchievementReward",            &ironManAchievementReward             }
             };
 
     [[nodiscard]] bool enabled() const { return challengesEnabled; }
@@ -105,7 +105,7 @@ public:
     [[nodiscard]] const std::unordered_map<uint8, uint32> *getTitleMapForChallenge(ChallengeModeSettings setting) const;
     [[nodiscard]] const std::unordered_map<uint8, uint32> *getTalentMapForChallenge(ChallengeModeSettings setting) const;
     [[nodiscard]] const std::unordered_map<uint8, uint32> *getItemMapForChallenge(ChallengeModeSettings setting) const;
-    //[[nodiscard]] const std::unordered_map<uint8, uint32> *getAchievementMapForChallenge(ChallengeModeSettings setting) const;
+    [[nodiscard]] const std::unordered_map<uint8, uint32> *getAchievementMapForChallenge(ChallengeModeSettings setting) const;
     [[nodiscard]] uint32 getItemRewardAmount(ChallengeModeSettings setting) const;
 };
 

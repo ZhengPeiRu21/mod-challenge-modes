@@ -201,31 +201,31 @@ uint32 ChallengeModes::getItemRewardAmount(ChallengeModeSettings setting) const
     return 0;
 }
 
-// const std::unordered_map<uint8, uint32> *ChallengeModes::getAchievementMapForChallenge(ChallengeModeSettings setting) const
-// {
-//     switch (setting)
-//     {
-//         case SETTING_HARDCORE:
-//             return &hardcoreAchievementReward;
-//         case SETTING_SEMI_HARDCORE:
-//             return &semiHardcoreAchievementReward;
-//         case SETTING_SELF_CRAFTED:
-//             return &selfCraftedAchievementReward;
-//         case SETTING_ITEM_QUALITY_LEVEL:
-//             return &itemQualityLevelAchievementReward;
-//         case SETTING_SLOW_XP_GAIN:
-//             return &slowXpGainAchievementReward;
-//         case SETTING_VERY_SLOW_XP_GAIN:
-//             return &verySlowXpGainAchievementReward;
-//         case SETTING_QUEST_XP_ONLY:
-//             return &questXpOnlyAchievementReward;
-//         case SETTING_IRON_MAN:
-//             return &ironManAchievementReward;
-//         case HARDCORE_DEAD:
-//             break;
-//     }
-//     return {};
-// }
+const std::unordered_map<uint8, uint32> *ChallengeModes::getAchievementMapForChallenge(ChallengeModeSettings setting) const
+{
+    switch (setting)
+    {
+        case SETTING_HARDCORE:
+            return &hardcoreAchievementReward;
+        case SETTING_SEMI_HARDCORE:
+            return &semiHardcoreAchievementReward;
+        case SETTING_SELF_CRAFTED:
+            return &selfCraftedAchievementReward;
+        case SETTING_ITEM_QUALITY_LEVEL:
+            return &itemQualityLevelAchievementReward;
+        case SETTING_SLOW_XP_GAIN:
+            return &slowXpGainAchievementReward;
+        case SETTING_VERY_SLOW_XP_GAIN:
+            return &verySlowXpGainAchievementReward;
+        case SETTING_QUEST_XP_ONLY:
+            return &questXpOnlyAchievementReward;
+        case SETTING_IRON_MAN:
+            return &ironManAchievementReward;
+        case HARDCORE_DEAD:
+            break;
+    }
+    return {};
+}
 
 class ChallengeModes_WorldScript : public WorldScript
 {
@@ -304,6 +304,15 @@ private:
             sChallengeModes->verySlowXpGainItemRewardAmount   = sConfigMgr->GetOption<uint32>("VerySlowXpGain.ItemRewardAmount", 1);
             sChallengeModes->questXpOnlyItemRewardAmount      = sConfigMgr->GetOption<uint32>("QuestXpOnly.ItemRewardAmount", 1);
             sChallengeModes->ironManItemRewardAmount          = sConfigMgr->GetOption<uint32>("IronMan.ItemRewardAmount", 1);
+
+            LoadStringToMap(sChallengeModes->hardcoreAchievementReward, sConfigMgr->GetOption<std::string>("Hardcore.AchievementReward", ""));
+            LoadStringToMap(sChallengeModes->semiHardcoreAchievementReward, sConfigMgr->GetOption<std::string>("SemiHardcore.AchievementReward", ""));
+            LoadStringToMap(sChallengeModes->selfCraftedAchievementReward, sConfigMgr->GetOption<std::string>("SelfCrafted.AchievementReward", ""));
+            LoadStringToMap(sChallengeModes->itemQualityLevelAchievementReward, sConfigMgr->GetOption<std::string>("ItemQualityLevel.AchievementReward", ""));
+            LoadStringToMap(sChallengeModes->slowXpGainAchievementReward, sConfigMgr->GetOption<std::string>("SlowXpGain.AchievementReward", ""));
+            LoadStringToMap(sChallengeModes->verySlowXpGainAchievementReward, sConfigMgr->GetOption<std::string>("VerySlowXpGain.AchievementReward", ""));
+            LoadStringToMap(sChallengeModes->questXpOnlyAchievementReward, sConfigMgr->GetOption<std::string>("QuestXpOnly.AchievementReward", ""));
+            LoadStringToMap(sChallengeModes->ironManAchievementReward, sConfigMgr->GetOption<std::string>("IronMan.AchievementReward", ""));
         }
     }
 };
@@ -340,7 +349,7 @@ void OnLevelChanged(Player* player, uint8 /*oldlevel*/) override
     const std::unordered_map<uint8, uint32>* titleRewardMap = sChallengeModes->getTitleMapForChallenge(settingName);
     const std::unordered_map<uint8, uint32>* talentRewardMap = sChallengeModes->getTalentMapForChallenge(settingName);
     const std::unordered_map<uint8, uint32>* itemRewardMap = sChallengeModes->getItemMapForChallenge(settingName);
-    //const std::unordered_map<uint8, uint32>* achievementRewardMap = sChallengeModes->getAchievementMapForChallenge(settingName);
+    const std::unordered_map<uint8, uint32>* achievementRewardMap = sChallengeModes->getAchievementMapForChallenge(settingName);
     uint8 level = player->getLevel();
 
     if (mapContainsKey(titleRewardMap, level))
@@ -360,6 +369,20 @@ void OnLevelChanged(Player* player, uint8 /*oldlevel*/) override
     if (mapContainsKey(talentRewardMap, level))
     {
         player->RewardExtraBonusTalentPoints(talentRewardMap->at(level));
+    }
+
+    if (mapContainsKey(achievementRewardMap, level))
+    {
+        AchievementEntry const* achievementInfo = sAchievementStore.LookupEntry(achievementRewardMap->at(level));
+        if (!achievementInfo)
+        {
+            LOG_ERROR("mod-challenge-modes", "Invalid Achievement ID {}!", achievementRewardMap->at(level));
+            return;
+        }
+
+        ChatHandler handler(player->GetSession());
+        std::string tNameLink = handler.GetNameLink(player);
+        player->CompletedAchievement(achievementInfo);
     }
 
     if (mapContainsKey(itemRewardMap, level))
