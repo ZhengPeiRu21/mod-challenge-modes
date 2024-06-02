@@ -78,15 +78,6 @@ public:
                     { "QuestXpOnly.ItemRewards",              &questXpOnlyItemRewards               },
                     { "IronMan.ItemRewards",                  &ironManItemRewards                   },
 
-                    // { "Hardcore.ItemRewardAmount",            &hardcoreItemRewardAmount             },
-                    // { "SemiHardcore.ItemRewardAmount",        &semiHardcoreItemRewardAmount         },
-                    // { "SelfCrafted.ItemRewardAmount",         &selfCraftedItemRewardAmount          }, 
-                    // { "ItemQualityLevel.ItemRewardAmount",    &itemQualityLevelItemRewardAmount     },
-                    // { "SlowXpGain.ItemRewardAmount",          &slowXpGainItemRewardAmount           },
-                    // { "VerySlowXpGain.ItemRewardAmount",      &verySlowXpGainItemRewardAmount       },
-                    // { "QuestXpOnly.ItemRewardAmount",         &questXpOnlyItemRewardAmount          },
-                    // { "IronMan.ItemRewardAmount",             &ironManItemRewardAmount              },
-
                     { "Hardcore.AchievementReward",           &hardcoreAchievementReward            },
                     { "SemiHardcore.AchievementReward",       &semiHardcoreAchievementReward        },
                     { "SelfCrafted.AchievementReward",        &selfCraftedAchievementReward         },
