@@ -350,7 +350,7 @@ void OnLevelChanged(Player* player, uint8 /*oldlevel*/) override
     const std::unordered_map<uint8, uint32>* talentRewardMap = sChallengeModes->getTalentMapForChallenge(settingName);
     const std::unordered_map<uint8, uint32>* itemRewardMap = sChallengeModes->getItemMapForChallenge(settingName);
     const std::unordered_map<uint8, uint32>* achievementRewardMap = sChallengeModes->getAchievementMapForChallenge(settingName);
-    uint8 level = player->getLevel();
+    uint8 level = player->GetLevel();
 
     if (mapContainsKey(titleRewardMap, level))
     {
@@ -785,7 +785,7 @@ public:
 
         bool CanBeSeen(Player const* player) override
         {
-            if ((player->getLevel() > 1 && player->getClass() != CLASS_DEATH_KNIGHT) || (player->getLevel() > 55))
+            if ((player->GetLevel() > 1 && player->getClass() != CLASS_DEATH_KNIGHT) || (player->GetLevel() > 55))
             {
                 return false;
             }
