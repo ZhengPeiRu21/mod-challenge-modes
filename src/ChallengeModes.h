@@ -7,6 +7,7 @@
 #include "Chat.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
+#include "SpellMgr.h"
 #include "Item.h"
 #include "ItemTemplate.h"
 #include "GameObjectAI.h"
